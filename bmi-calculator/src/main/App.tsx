@@ -27,12 +27,16 @@ function App() {
       <main>
         <h2>Type your data</h2>
         <BmiForm onCalculate={(value) => showValue(value)} />
-        <p style={{ visibility: appState.calculated ? "visible" : "hidden" }}>
-          BMI:
-        </p>
-        <p style={{ visibility: appState.calculated ? "visible" : "hidden" }}>
-          {appState.value.toFixed(2)}
-        </p>
+
+        {
+          appState.calculated ?
+          (
+            <div>
+              <p>BMI:</p>
+              <p>{appState.value.toFixed(2)}</p>
+            </div>
+          ) : <br/>
+        }
       </main>
 
       <Footer title="R1 Software @ 2023" />

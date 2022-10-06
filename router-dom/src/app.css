@@ -1,0 +1,59 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  height: 100vh;
+  margin: 0 auto;
+}
+
+.menu ul {
+  display: flex;
+  gap: 1rem;
+  list-style-type: none;
+  padding: 0;
+}
+
+.menu ul li {
+  cursor: pointer;
+  padding: 8px 16px;
+  text-align: center;
+  border-radius: 15%;
+  transition: 300ms;
+}
+
+.menu ul li:hover {
+  background-color: #f5f5f5;
+}
+
+.menu ul li {
+  cursor: pointer;
+  padding: 8px 16px;
+  text-align: center;
+  border-radius: 15%;
+  transition: 300ms;
+}
+
+.menu ul li a{
+  color: black;
+  text-decoration: none;
+  width: 100%;
+}
+
+
+header {
+  display: block;
+}
+
+main {
+  flex: 1;
+}
+
+footer {
+  height: 2rem;
+}

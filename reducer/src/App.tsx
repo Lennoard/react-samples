@@ -6,33 +6,6 @@ import { TaskList } from './components/list_task';
 export default function App() {
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
 
-  function handleAddTask(text: string) {
-    setTasks([
-      ...tasks,
-      {
-        id: nextId++,
-        text: text,
-        done: false,
-      },
-    ]);
-  }
-
-  function handleChangeTask(task: Task) {
-    setTasks(
-      tasks.map((t) => {
-        if (t.id === task.id) {
-          return task;
-        } else {
-          return t;
-        }
-      })
-    );
-  }
-
-  function handleDeleteTask(taskId: number) {
-    setTasks(tasks.filter((t) => t.id !== taskId));
-  }
-
   return (
     <div className="App">
       <h1>React + Reducer</h1>

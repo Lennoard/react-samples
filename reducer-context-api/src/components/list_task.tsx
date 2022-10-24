@@ -1,26 +1,17 @@
-import { Task } from "../App"
-import { TaskItem } from "./item_task"
+import { useContext } from "react";
+import { TasksContext } from "../tasks/TasksContext";
+import { TaskItem } from "./item_task";
 
-interface TaskListProps{
-    tasks: Task[]
-    onChangeTask: any
-    onDeleteTask: (taskId: number) => void
+export function TaskList() {
+  const tasks = useContext(TasksContext);
+
+  return (
+    <>
+      <ul>
+        {tasks.map((task) => (
+          <TaskItem key={task.id} task={task} />
+        ))}
+      </ul>
+    </>
+  );
 }
-
-
-export function TaskList({tasks, onChangeTask, onDeleteTask}: TaskListProps){
-
-    return (
-        <>
-            <ul>
-                {tasks.map(task => (
-                   <TaskItem key={task.id} 
-                        task={task} 
-                        onChangeTask={onChangeTask} 
-                        onDeleteTask={onDeleteTask} />
-                ))}
-            </ul>
-        </>
-    )
-}
-

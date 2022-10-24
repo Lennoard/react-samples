@@ -1,71 +1,90 @@
-import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { Task } from "../App"
+import {
+  ChangeEvent,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { Task } from "../tasks/Task";
+import { TasksDispatchContext } from "../tasks/TasksContext";
+import { TaskType } from "../tasks/TaskType";
 
-interface TaskItemProps{
-    task: Task
-    onChangeTask: any
-    onDeleteTask: (taskId: number) => void
+interface TaskItemProps {
+  task: Task;
 }
 
-export function TaskItem({task, onChangeTask, onDeleteTask}: TaskItemProps){
-    const [taskText, setTaskText] = useState(task.text)
-    const [isEditing, setIsEditing] = useState(false)
+export function TaskItem({ task }: TaskItemProps) {
+  const [isEditing, setIsEditing] = useState(false);
+  const dispatch = useContext(TasksDispatchContext);
 
-    // useCallback --> Faz memória da função entre as redenrizações
-    const handlerDoneChange = useCallback(()=>{
-        () => {
-            task.done = !task.done
-            onChangeTask(task)
-        }
-    },[task])
+  const handleTextChange = (event: ChangeEvent<HTMLInputElement>) => {
+    dispatch({
+      type: TaskType.Changed,
+      task: {
+        ...task,
+        text: event.target.value,
+      },
+    });
+  };
 
+  const handleEditSaveClick = () => {
+    setIsEditing(!isEditing);
+  };
 
-    // Implantar --> useCallback
-    const handleTextChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setTaskText(event.target.value)
-    }
+  // useMemo --> Faz Memória valores entre renderizações/sincronizações
+  const buttonLabel = useMemo(
+    () => (isEditing ? "Salvar" : "Editar"),
+    [isEditing]
+  );
 
-    // Implantar --> useCallback
-    const handleEditSaveClick = () => {
-        if (isEditing){
-            onChangeTask({...task, text: taskText})
-            setIsEditing(false)
-        }else{
-            setIsEditing(true)
-        }
-    }
-
-    // useMemo --> Faz Memória valores entre renderizações/sincronizações
-    const buttonLabel = useMemo(() => isEditing ? "Salvar" : "Editar", [isEditing])
-
-    // useHef --> Similar a useState, porém não muda. (atributo current)
-    /* Usado geralmente para ficar conectado a algum HTMLElement
+  // useHef --> Similar a useState, porém não muda. (atributo current)
+  /* Usado geralmente para ficar conectado a algum HTMLElement
       e assim ler ou alterar algum atributo/estado  */
-    const inputTaskTextRef = useRef<HTMLInputElement>(null)
+  const inputTaskTextRef = useRef<HTMLInputElement>(null);
 
-    useEffect(()=> {
-        isEditing && inputTaskTextRef.current!.focus()
-    }, [isEditing])
+  useEffect(() => {
+    isEditing && inputTaskTextRef.current!.focus();
+  }, [isEditing]);
 
-    return (
-        <li key={task.id}>
-            <input type="checkbox" checked={task.done} onChange={handlerDoneChange}/>
-            
-            {
-                isEditing ? 
-                        (
-                            <input 
-                                ref={inputTaskTextRef}
-                                value={taskText} 
-                                onChange={handleTextChange} 
-                                />
-                        ) 
-                    : 
-                        (<span>{task.text}</span>)
-            }
+  return (
+    <li key={task.id}>
+      <input
+        type="checkbox"
+        checked={task.done}
+        onChange={(e) =>
+          dispatch({
+            type: TaskType.Changed,
+            task: {
+              ...task,
+              done: e.target.checked,
+            },
+          })
+        }
+      />
 
-            <button onClick={handleEditSaveClick}>{buttonLabel}</button>
-            <button onClick={() => onDeleteTask(task.id)} >Apagar</button>
-        </li>
-    )
+      {isEditing ? (
+        <input
+          ref={inputTaskTextRef}
+          value={task.text}
+          onChange={handleTextChange}
+        />
+      ) : (
+        <span>{task.text}</span>
+      )}
+
+      <button onClick={handleEditSaveClick}>{buttonLabel}</button>
+      <button
+        onClick={() => {
+          dispatch({
+            type: TaskType.Deleted,
+            id: task.id,
+          });
+        }}
+      >
+        Apagar
+      </button>
+    </li>
+  );
 }
